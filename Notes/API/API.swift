@@ -36,8 +36,10 @@ class API {
     }
     
     static func updateNote(_ id: String, text: String) async -> Note? {
-        let parameters = "{\n    \"text\": \"\(text)\"\n}"
-        let postData = parameters.data(using: .utf8)
+        struct Payload: Encodable {
+            let text: String
+        }
+        let postData = try! JSONEncoder().encode(Payload(text: text))
         var request = URLRequest(url: URL(string: "\(baseURL)/notes/\(id)")!)
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "PATCH"

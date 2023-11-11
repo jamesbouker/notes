@@ -13,7 +13,9 @@ struct HomeView: View {
     var body: some View {
         List(notes) { note in
             NavigationLink {
-                NoteView(note: note)
+                NoteView(note: note) {
+                    loadNotes()
+                }
             } label: {
                 Text(note.title)
             }
