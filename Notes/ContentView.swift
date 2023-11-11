@@ -14,7 +14,7 @@ struct ContentView: View {
         VStack {
             List {
                 ForEach(0..<notes.count, id: \.self) {
-                    Text(notes[$0].note)
+                    Text(notes[$0]._id)
                 }
             }
         }
