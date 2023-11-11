@@ -11,65 +11,79 @@ class API {
     
     // MARK: - Notes (CRUD)
     
+    @discardableResult
     static func createNote(_ text: String) async -> Note? {
-        let parameters = "{\"text\": \"\(text)\"\n}"
-        let postData = parameters.data(using: .utf8)
-        var request = URLRequest(url: URL(string: "\(baseURL)/notes")!)
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpMethod = "POST"
-        request.httpBody = postData
-        
-        guard let data = await self.data(request) else { return nil }
-        return (try? JSONDecoder().decode(Note.self, from: data)) ?? nil
+        struct Body: Encodable {
+            var text: String
+            let secret: String = "60042feb-d259-4245-9147-e67ea45813e4"
+        }
+        return await perform(path: "/notes", method: .POST, body: Body(text: text)).output
     }
     
     static func notes() async -> [Note] {
-        let request = URLRequest(url: URL(string: "\(baseURL)/notes")!)
-        guard let data = await self.data(request) else { return [] }
-        return (try? JSONDecoder().decode([Note].self, from: data)) ?? []
+        await perform(path: "/notes").output ?? []
     }
     
     static func note(_ id: String) async -> Note? {
-        let request = URLRequest(url: URL(string: "\(baseURL)/notes/\(id)")!)
-        guard let data = await self.data(request) else { return nil }
-        return (try? JSONDecoder().decode(Note.self, from: data)) ?? nil
+        await perform(path: "/notes/\(id)").output
     }
     
+    @discardableResult
     static func updateNote(_ id: String, text: String) async -> Note? {
-        struct Payload: Encodable {
+        struct Body: Encodable {
             let text: String
+            let secret: String = "60042feb-d259-4245-9147-e67ea45813e4"
         }
-        let postData = try! JSONEncoder().encode(Payload(text: text))
-        var request = URLRequest(url: URL(string: "\(baseURL)/notes/\(id)")!)
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpMethod = "PATCH"
-        request.httpBody = postData
-        
-        guard let data = await self.data(request) else { return nil }
-        return (try? JSONDecoder().decode(Note.self, from: data)) ?? nil
+        return await perform(path: "/notes/\(id)", method: .PATCH, body: Body(text: text)).output
     }
     
+    @discardableResult
     static func deleteNote(_ id: String) async -> Bool {
-        var request = URLRequest(url: URL(string: "\(baseURL)/notes/\(id)")!)
-        request.httpMethod = "DELETE"
-        guard let response = await self.response(request) else { return false }
-        return (response as? HTTPURLResponse)?.statusCode == 200
+        struct Body: Encodable {
+            let secret: String = "60042feb-d259-4245-9147-e67ea45813e4"
+        }
+        let result: PerformResult<String?> = await perform(path: "/notes/\(id)", method: .DELETE, body: Body())
+        return result.code == 200
     }
     
     // MARK: - Private Helpers
-    
-    private static func data(_ request: URLRequest) async -> Data? {
-        guard let (data, _) = try? await URLSession.shared.data(for: request) else {
-            return nil
-        }
-        return data
+
+    struct PerformResult<Output: Decodable> {
+        var output: Output?
+        var code: Int
     }
     
-    private static func response(_ request: URLRequest) async -> URLResponse? {
-        guard let (_, response) = try? await URLSession.shared.data(for: request) else {
-            return nil
+    enum Method: String {
+        case GET
+        case POST
+        case PATCH
+        case DELETE
+    }
+    
+    struct EmptyBody: Encodable {}
+    
+    private static func perform<T: Encodable, Output: Decodable>(path: String,
+                                                                 method: Method = .GET,
+                                                                 body: T) async -> PerformResult<Output> {
+        let url = URL(string: baseURL + path)!
+        var request = URLRequest(url: url)
+        request.httpMethod = method.rawValue
+        if !(body is EmptyBody) {
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = try! JSONEncoder().encode(body)
         }
-        return response
+        
+        guard let response = try? await URLSession.shared.data(for: request) else {
+            return .init(output: nil, code: 408)
+        }
+        let code = (response.1 as? HTTPURLResponse)?.statusCode ?? 200
+        let output = try? JSONDecoder().decode(Output.self, from: response.0)
+        return .init(output: output, code: code)
+    }
+    
+    private static func perform<Output: Decodable>(path: String,
+                                                   method: Method = .GET) async -> PerformResult<Output> {
+        await self.perform(path: path, method: method, body: EmptyBody())
     }
     
     private static var baseURL: String {

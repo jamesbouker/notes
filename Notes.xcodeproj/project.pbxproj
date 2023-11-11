@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F5B2A2552AFFEB0D004EB09F /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = F5B2A2542AFFEB0D004EB09F /* TODO */; };
 		F5FCC0452AFEEDB5004212A1 /* NotesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5FCC0442AFEEDB5004212A1 /* NotesApp.swift */; };
 		F5FCC0492AFEEDB6004212A1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5FCC0482AFEEDB6004212A1 /* Assets.xcassets */; };
 		F5FCC04C2AFEEDB6004212A1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5FCC04B2AFEEDB6004212A1 /* Preview Assets.xcassets */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F5B2A2542AFFEB0D004EB09F /* TODO */ = {isa = PBXFileReference; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
 		F5FCC0412AFEEDB5004212A1 /* Notes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Notes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5FCC0442AFEEDB5004212A1 /* NotesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesApp.swift; sourceTree = "<group>"; };
 		F5FCC0482AFEEDB6004212A1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -58,6 +60,7 @@
 			isa = PBXGroup;
 			children = (
 				F5FCC0442AFEEDB5004212A1 /* NotesApp.swift */,
+				F5B2A2542AFFEB0D004EB09F /* TODO */,
 				F5FCC0572AFF1AD7004212A1 /* Views */,
 				F5FCC0562AFEF1DF004212A1 /* API */,
 				F5FCC0482AFEEDB6004212A1 /* Assets.xcassets */,
@@ -150,6 +153,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5B2A2552AFFEB0D004EB09F /* TODO in Resources */,
 				F5FCC04C2AFEEDB6004212A1 /* Preview Assets.xcassets in Resources */,
 				F5FCC0492AFEEDB6004212A1 /* Assets.xcassets in Resources */,
 			);

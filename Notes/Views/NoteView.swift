@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+private let placeholderText = "Type something..."
+
 struct NoteView: View {
     let note: Note?
     var onSave: () -> Void
@@ -16,22 +18,26 @@ struct NoteView: View {
     var body: some View {
         VStack(alignment: .leading) {
             TextEditor(text: $text)
+                .onTapGesture {
+                    if text == placeholderText { text = "" }
+                }
+                .foregroundColor(text == placeholderText ? .secondary : .primary)
             Spacer()
         }
         .onAppear {
-            text = note?.note ?? ""
+            text = note != nil ? note!.note : placeholderText
         }
         .onDisappear {
             Task {
                 if let note = note {
-                    _=await API.updateNote(note._id, text: text)
-                } else {
-                    _=await API.createNote(text)
+                    await API.updateNote(note._id, text: text)
+                } else if text != placeholderText && !text.isEmpty {
+                    await API.createNote(text)
                 }
                 onSave()
             }
         }
-        .navigationTitle(Text(text.title.isEmpty ? (note?.note.title ?? "") : text.title))
+        .navigationTitle(Text(text.title.isEmpty ? (note?.note.title ?? placeholderText) : text.title))
         .padding(.horizontal)
     }
 }
