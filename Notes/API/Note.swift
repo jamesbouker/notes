@@ -7,7 +7,25 @@
 
 import Foundation
 
-struct Note: Decodable {
+struct Note: Decodable, Identifiable {
     var _id: String
     var note: String
+    
+    var title: String {
+        note.title
+    }
+    
+    var body: String {
+        note.components(separatedBy: .newlines).dropFirst(1).joined(separator: "\n")
+    }
+    
+    // Identifiable
+    var id: String { _id }
+}
+
+
+extension String {
+    var title: String {
+        self.components(separatedBy: .newlines).first ?? ""
+    }
 }
