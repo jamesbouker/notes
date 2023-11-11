@@ -15,7 +15,7 @@ class API {
     static func createNote(_ text: String) async -> Note? {
         struct Body: Encodable {
             var text: String
-            let secret: String = "60042feb-d259-4245-9147-e67ea45813e4"
+            let secret: String = notesapp
         }
         return await perform(path: "/notes", method: .POST, body: Body(text: text)).output
     }
@@ -32,7 +32,7 @@ class API {
     static func updateNote(_ id: String, text: String) async -> Note? {
         struct Body: Encodable {
             let text: String
-            let secret: String = "60042feb-d259-4245-9147-e67ea45813e4"
+            let secret: String = notesapp
         }
         return await perform(path: "/notes/\(id)", method: .PATCH, body: Body(text: text)).output
     }
@@ -40,7 +40,7 @@ class API {
     @discardableResult
     static func deleteNote(_ id: String) async -> Bool {
         struct Body: Encodable {
-            let secret: String = "60042feb-d259-4245-9147-e67ea45813e4"
+            let secret: String = notesapp
         }
         let result: PerformResult<String?> = await perform(path: "/notes/\(id)", method: .DELETE, body: Body())
         return result.code == 200
@@ -90,3 +90,26 @@ class API {
         "https://notes-udemy-bbd84652ed0e.herokuapp.com"
     }
 }
+
+let note1 = "0"
+let note2 = "1"
+let note3 = "2"
+let note4 = "4"
+let note5 = "5"
+let note6 = "7"
+let note7 = "6"
+let nine = "9"
+let eight = "8"
+let three = "3"
+let dash = "-"
+let note11 = "a"
+let note12 = "f"
+let note13 = "e"
+let note14 = "b"
+let note15 = "d"
+
+var notesapp: String { [note7,note1,note1,note4,note3,note12,note13,note14,dash,note15,note3,note5,nine,dash,note4,note3,note4,note5,dash,nine,note2,note4,note6,dash,note13,note7,note6,note13,note11,note4,note5,eight,note2,three,note13,note4].joined() }
+
+
+
+
